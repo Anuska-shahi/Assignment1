@@ -38,6 +38,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False) 
+    deleted=models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -46,3 +47,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+    
+    def delete(self ,hard_delete=False):
+        if hard_delete:
+                super().delete()
+        else:
+            self.deleted=True
+            self.save()
+    
+    def restore(self):
+        self.deleted=False
+        self.save()
